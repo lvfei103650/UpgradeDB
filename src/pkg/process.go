@@ -31,10 +31,6 @@ func InitDBAccess() {
 	dbm.InitDBConfig(DataBaseDriverName, DataBaseAliasName, DataBaseDataSource)
 }
 
-func iscontainSubString(key string, subKey string) bool {
-	return strings.Contains(key, subKey)
-}
-
 func queryByFuzzyString(key string) (Meta, error){
 	podMetasRecord, err:= QueryAllMeta("type", TypeName)
 	if err != nil {
@@ -42,7 +38,7 @@ func queryByFuzzyString(key string) (Meta, error){
 		return Meta{}, err
 	}
 	for _, v := range *podMetasRecord {
-		if iscontainSubString(v.Key, key) {
+		if strings.Contains(v.Key, key) {
 			return v, nil
 		}
 	}
@@ -58,7 +54,6 @@ func checkSysStopEdgecoreExists() {
 	}
 }
 
-//step 1 :
 func StopEdgecore() {
 	//checkSysStopEdgecoreExists()
 	cmd := exec.Command("sh", "-c", "systemctl stop edgecore")
@@ -69,7 +64,6 @@ func StopEdgecore() {
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
 
-//step 2:
 //	docker stop `docker ps | grep xxx | awk'{print $1}'`
 //	docker rm  `docker ps | grep xxx | awk'{print $1}'`
 func RemoveTargetContainers(key string) {
@@ -92,7 +86,6 @@ func RemoveTargetContainers(key string) {
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
 
-//step 3:
 func ProcessDB(key string, imagesTag string) error{
 	//1. queryByFuzzyString get podname
 	podMeta, err := queryByFuzzyString(key)
@@ -120,7 +113,6 @@ func ProcessDB(key string, imagesTag string) error{
 	return err
 }
 
-//step 4:
 func RestartEdgecore() {
 	cmd := exec.Command("sh", "-c", "systemctl restart edgecore")
 	out, err := cmd.CombinedOutput()

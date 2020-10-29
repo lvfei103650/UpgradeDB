@@ -1,12 +1,9 @@
 package dbm
 
 import (
-	"sync"
-
 	"github.com/astaxie/beego/orm"
-
-	//Blank import to run only the init function
 	_ "github.com/mattn/go-sqlite3"
+	"sync"
 )
 
 // DBAccess is Ormer object interface for all transaction processing and switching database
