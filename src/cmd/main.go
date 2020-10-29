@@ -14,7 +14,7 @@ func main() {
 	//2. 注册还是直接打开edgecore/.db
 	pkg.InitDBAccess()
 
-	//3. 一系列操作，解决
+	//3. 一系列操作，解决断网升级的task
 	pkg.StopEdgecore()
 	pkg.RemoveTargetContainers(PodName)
 
