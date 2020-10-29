@@ -4,6 +4,7 @@ import (
 	"UpgradeWhenDisconnected/src/common/dbm"
 	"UpgradeWhenDisconnected/src/pkg"
 	"fmt"
+	"github.com/astaxie/beego/orm"
 )
 
 const (
@@ -24,8 +25,8 @@ func main() {
 	fmt.Printf("c podName: %s, imageTagName: %s", c.PodName, c.ImageTagName)
 
 	//2. 注册还是直接打开edgecore/.db
+	orm.RegisterModel(new(pkg.Meta))
 	dbm.InitDBConfig(DataBaseDriverName, DataBaseAliasName, DataBaseDataSource)
-
 
 	//3. 一系列操作，解决
 	pkg.StopEdgecore()

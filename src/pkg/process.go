@@ -3,9 +3,9 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
+	"k8s.io/api/core/v1"
 	"os/exec"
 	"strings"
-	"k8s.io/api/core/v1"
 )
 const (
 	TypeName = "pod"
@@ -69,7 +69,7 @@ func RemoveTargetContainers(key string) {
 }
 
 //step 3:
-	func ProcessDB(key string, imagesTag string) error{
+func ProcessDB(key string, imagesTag string) error{
 	//1. queryByFuzzyString get podname
 	podMeta, err := queryByFuzzyString(key)
 	if err != nil {
@@ -78,21 +78,19 @@ func RemoveTargetContainers(key string) {
 	}
 
 	//2. modify imageTag in meta.value
-	var podstructs  v1.PodSpec
-	content, err1 := json.Marshal(podMeta)
-	if err1 != nil {
-		fmt.Printf("err: %v", err)
-	}
-	json.Unmarshal(content, &podstructs)
-	podstructs.Containers[0].Image = imagesTag
-
-	contentAfter, err := json.Marshal(podstructs)
-	json.Unmarshal(contentAfter, &podMeta)
+	var podstructs  v1.Pod
+	json.Unmarshal([]byte(podMeta.Value), podstructs)
+	podstructs.Spec.Containers[0].Image = imagesTag
+	contentAfter, _ := json.Marshal(podstructs)
 
 	//3. update db
-	err = InsertOrUpdate(&podMeta)
+	meta := &Meta{
+		Key: podMeta.Key,
+		Type: podMeta.Type,
+		Value: string(contentAfter)}
+	err2 := UpdateMeta(meta)
 	if err != nil {
-		fmt.Printf("errpr : %v", err)
+		fmt.Printf("errpr : %v", err2)
 		return err
 	}
 	return err
