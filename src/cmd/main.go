@@ -39,6 +39,8 @@ func main() {
 
 	//4. 过程当中有一项注意： 检查解压后的本地images的tag是否和要更新的tag一致，如果一致...,否则...。
 
-
+	//5. 重新启动edgecore
 	pkg.RestartEdgecore()
+
+	//6. 本地验证是否程序生效，edgecore是否重新拉起新的pod
 }
