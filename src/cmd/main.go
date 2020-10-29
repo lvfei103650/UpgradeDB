@@ -12,7 +12,8 @@ const (
 	// DataBaseAliasName is default
 	DataBaseAliasName = "default"
 	// DataBaseDataSource is edge.db
-	DataBaseDataSource = "/var/lib/kubeedge/edgecore.db"
+	//DataBaseDataSource = "/var/lib/kubeedge/edgecore.db"
+	DataBaseDataSource = "C:/Users/fei.lv4/go/src/UpgradeWhenDisconnected/edgecore.db"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 
 	//3. 一系列操作，解决
 	pkg.StopEdgecore()
-	pkg.RemoveTargetContainers()
+	pkg.RemoveTargetContainers(c.PodName)
 
 	errProcessDB := pkg.ProcessDB(c.PodName, c.ImageTagName)
 	if errProcessDB != nil {

@@ -7,4 +7,5 @@ import (
 
 func NewUpradeWhenDisconnectedCommand() *cobra.Command {
 	fmt.Println("TODO cobra Command")
+	return &cobra.Command{}
 }

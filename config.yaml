@@ -1,3 +1,2 @@
-
 podName: redis
 imageTagName: harbor.eniot.io/edge/edge-redis:tag_edge-redis_20200622_001

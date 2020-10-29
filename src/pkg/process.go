@@ -41,7 +41,7 @@ func checkSysStopEdgecoreExists() {
 //step 1 :
 func StopEdgecore() {
 	//checkSysStopEdgecoreExists()
-	cmd := exec.Command("systemctl stop edgecore")
+	cmd := exec.Command("sh", "-c", "systemctl stop edgecore")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
@@ -52,15 +52,15 @@ func StopEdgecore() {
 //step 2:
 //	docker stop `docker ps | grep xxx | awk'{print $1}'`
 //	docker rm  `docker ps | grep xxx | awk'{print $1}'`
-func RemoveTargetContainers() {
-	cmd := exec.Command("docker stop `docker ps | grep xxx | awk'{print $1}'`")
+func RemoveTargetContainers(key string) {
+	cmd := exec.Command("sh", "-c", "docker stop `docker ps | grep xxx | awk '{print $1}'`")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 
-	cmd = exec.Command("docker rm  `docker ps | grep xxx | awk'{print $1}'`")
+	cmd = exec.Command("sh", "-c", "docker rm  `docker ps | grep xxx | awk '{print $1}'`")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
@@ -100,7 +100,7 @@ func RemoveTargetContainers() {
 
 //step 4:
 func RestartEdgecore() {
-	cmd := exec.Command("systemctl restart edgecore")
+	cmd := exec.Command("sh", "-c", "systemctl restart edgecore")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
