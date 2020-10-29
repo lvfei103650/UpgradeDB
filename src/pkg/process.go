@@ -1,15 +1,35 @@
 package pkg
 
 import (
+	"UpgradeWhenDisconnected/src/common/dbm"
 	"encoding/json"
 	"fmt"
+	"github.com/astaxie/beego/orm"
 	"k8s.io/api/core/v1"
 	"os/exec"
 	"strings"
 )
 const (
 	TypeName = "pod"
+	// DataBaseDriverName is sqlite3
+	DataBaseDriverName = "sqlite3"
+	// DataBaseAliasName is default
+	DataBaseAliasName = "default"
+	// DataBaseDataSource is edge.db
+	DataBaseDataSource = "/var/lib/kubeedge/edgecore.db"
 )
+
+func InitConfig() (podName string, imageTagName string) {
+	var c Conf
+	c.GetConf()
+	fmt.Printf("c podName: %s, imageTagName: %s", c.PodName, c.ImageTagName)
+	return c.PodName, c.ImageTagName
+}
+
+func InitDBAccess() {
+	orm.RegisterModel(new(Meta))
+	dbm.InitDBConfig(DataBaseDriverName, DataBaseAliasName, DataBaseDataSource)
+}
 
 func iscontainSubString(key string, subKey string) bool {
 	return strings.Contains(key, subKey)
@@ -53,14 +73,18 @@ func StopEdgecore() {
 //	docker stop `docker ps | grep xxx | awk'{print $1}'`
 //	docker rm  `docker ps | grep xxx | awk'{print $1}'`
 func RemoveTargetContainers(key string) {
-	cmd := exec.Command("sh", "-c", "docker stop `docker ps | grep xxx | awk '{print $1}'`")
+
+	cmdStopStr := fmt.Sprintf("%s %s %s","docker stop `docker ps | grep ", key, "| awk '{print $1}'`")
+
+	cmd := exec.Command("sh", "-c", cmdStopStr)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 
-	cmd = exec.Command("sh", "-c", "docker rm  `docker ps | grep xxx | awk '{print $1}'`")
+	cmdRemoveStr := fmt.Sprintf("%s %s %s","docker rm `docker ps | grep ", key, " | awk '{print $1}'`")
+	cmd = exec.Command("sh", "-c", cmdRemoveStr)
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)

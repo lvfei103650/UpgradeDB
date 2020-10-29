@@ -1,38 +1,24 @@
 package main
 
 import (
-	"UpgradeWhenDisconnected/src/common/dbm"
 	"UpgradeWhenDisconnected/src/pkg"
 	"fmt"
-	"github.com/astaxie/beego/orm"
 )
 
-const (
-	// DataBaseDriverName is sqlite3
-	DataBaseDriverName = "sqlite3"
-	// DataBaseAliasName is default
-	DataBaseAliasName = "default"
-	// DataBaseDataSource is edge.db
-	//DataBaseDataSource = "/var/lib/kubeedge/edgecore.db"
-	DataBaseDataSource = "C:/Users/fei.lv4/go/src/UpgradeWhenDisconnected/edgecore.db"
-)
 
 func main() {
 	fmt.Println("before start, need to do some tasks")
 	//1. 解析config.yaml, 初始化参数
-	var c pkg.Conf
-	c.GetConf()
-	fmt.Printf("c podName: %s, imageTagName: %s", c.PodName, c.ImageTagName)
+	PodName, ImageTagName := pkg.InitConfig()
 
 	//2. 注册还是直接打开edgecore/.db
-	orm.RegisterModel(new(pkg.Meta))
-	dbm.InitDBConfig(DataBaseDriverName, DataBaseAliasName, DataBaseDataSource)
+	pkg.InitDBAccess()
 
 	//3. 一系列操作，解决
 	pkg.StopEdgecore()
-	pkg.RemoveTargetContainers(c.PodName)
+	pkg.RemoveTargetContainers(PodName)
 
-	errProcessDB := pkg.ProcessDB(c.PodName, c.ImageTagName)
+	errProcessDB := pkg.ProcessDB(PodName, ImageTagName)
 	if errProcessDB != nil {
 		fmt.Printf("error : %v", errProcessDB)
 	}
