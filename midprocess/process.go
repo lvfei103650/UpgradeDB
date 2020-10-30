@@ -1,7 +1,7 @@
 package midprocess
 
 import (
-	"UpgradeWhenDisconnected/src/common/dbm"
+	"UpgradeWhenDisconnected/common/dbm"
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego/orm"

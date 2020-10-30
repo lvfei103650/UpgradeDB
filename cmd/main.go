@@ -1,7 +1,7 @@
 package main
 
 import (
-	"UpgradeWhenDisconnected/src/midprocess"
+	"UpgradeWhenDisconnected/midprocess"
 	"fmt"
 )
 
