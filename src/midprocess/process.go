@@ -1,4 +1,4 @@
-package pkg
+package midprocess
 
 import (
 	"UpgradeWhenDisconnected/src/common/dbm"
