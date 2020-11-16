@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 const (
-	TypeName = "pod"
+	PodTypeName = "pod"
+	ConfigmapTypeName = "configmap"
 	// DataBaseDriverName is sqlite3
 	DataBaseDriverName = "sqlite3"
 	// DataBaseAliasName is default
@@ -31,8 +32,8 @@ func InitDBAccess() {
 	dbm.InitDBConfig(DataBaseDriverName, DataBaseAliasName, DataBaseDataSource)
 }
 
-func queryByFuzzyString(key string) (Meta, error){
-	podMetasRecord, err:= QueryAllMeta("type", TypeName)
+func queryByFuzzyString(key string, typeName string) (Meta, error){
+	podMetasRecord, err:= QueryAllMeta("type", typeName)
 	if err != nil {
 		fmt.Printf("list pods failed, error: %v", err)
 		return Meta{}, err
@@ -86,9 +87,29 @@ func RemoveTargetContainers(key string) {
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
 
+//处理pod的configmap的Update DB
+func ProcessConfigmap(key string, modifyinformations string) error {
+	configmapMeta, err := queryByFuzzyString(key, ConfigmapTypeName)
+	if err != nil {
+		fmt.Printf("err: %v", err)
+		return err
+	}
+	//Todo 界面展示方便用户进行对比修改内容
+	fmt.Printf("configmap informations is : %v", configmapMeta)
+
+
+	//Todo 界面修改内容获取get
+
+	//Todo ConfigmapMeta数据更新
+
+
+	return err
+}
+
+//处理pod的imageTag的Update DB
 func ProcessDB(key string, imagesTag string) error{
 	//1. queryByFuzzyString get podname
-	podMeta, err := queryByFuzzyString(key)
+	podMeta, err := queryByFuzzyString(key, PodTypeName)
 	if err != nil {
 		fmt.Printf("err: %v", err)
 		return err
