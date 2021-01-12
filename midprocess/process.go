@@ -117,7 +117,7 @@ func ProcessDB(key string, imagesTag string) error{
 
 	//2. modify imageTag in meta.value
 	var podstructs  v1.Pod
-	json.Unmarshal([]byte(podMeta.Value), podstructs)
+	json.Unmarshal([]byte(podMeta.Value), &podstructs)
 	podstructs.Spec.Containers[0].Image = imagesTag
 	contentAfter, _ := json.Marshal(podstructs)
 
